@@ -154,7 +154,7 @@ export default function Home() {
                   onChange={(e) => setInputValue(e.target.value)}
                   onKeyDown={handleKeyDown}
                   placeholder="https://example.com"
-                  className="w-full h-16 px-6 pr-36 bg-[var(--color-surface)] border border-[var(--color-border-subtle)] rounded-2xl text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)] focus:outline-none focus:border-[var(--color-accent)] focus:ring-2 focus:ring-[var(--color-accent-subtle)] transition-all font-mono text-lg"
+                  className="w-full h-16 px-6 pr-36 bg-[var(--color-surface)] border border-[var(--color-border-subtle)] rounded-2xl text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)] focus:outline-none focus:border-[var(--color-text-muted)] focus:ring-2 focus:ring-[var(--color-accent-subtle)] transition-all font-mono text-lg"
                 />
               ) : (
                 <textarea
@@ -163,13 +163,13 @@ export default function Home() {
                   onKeyDown={handleKeyDown}
                   placeholder="Describe the website you want to analyze... (e.g., 'A modern fintech dashboard with dark mode, clean typography, and data visualization cards')"
                   rows={4}
-                  className="w-full px-6 py-4 pr-36 bg-[var(--color-surface)] border border-[var(--color-border-subtle)] rounded-2xl text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)] focus:outline-none focus:border-[var(--color-accent)] focus:ring-2 focus:ring-[var(--color-accent-subtle)] transition-all resize-none"
+                  className="w-full px-6 py-4 pr-36 bg-[var(--color-surface)] border border-[var(--color-border-subtle)] rounded-2xl text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)] focus:outline-none focus:border-[var(--color-text-muted)] focus:ring-2 focus:ring-[var(--color-accent-subtle)] transition-all resize-none"
                 />
               )}
               <button
                 onClick={handleAnalyze}
                 disabled={!inputValue.trim() || isAnalyzing}
-                className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 disabled:from-zinc-700 disabled:to-zinc-700 disabled:cursor-not-allowed text-white font-medium rounded-xl transition-all shadow-lg shadow-violet-500/25 disabled:shadow-none"
+                className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2 px-5 py-2.5 bg-[var(--color-text-primary)] hover:bg-[var(--color-text-secondary)] disabled:bg-zinc-700 disabled:cursor-not-allowed text-[var(--color-bg)] font-medium rounded-xl transition-all"
               >
                 {isAnalyzing ? (
                   <>
@@ -215,8 +215,8 @@ export default function Home() {
               >
                 <div className="bg-[var(--color-surface)] border border-[var(--color-border-subtle)] rounded-2xl p-8">
                   <div className="flex items-center gap-4 mb-6">
-                    <div className="w-10 h-10 rounded-xl bg-[var(--color-accent-subtle)] flex items-center justify-center">
-                      <Sparkles className="w-5 h-5 text-[var(--color-accent)] animate-pulse-subtle" />
+                    <div className="w-10 h-10 rounded-xl bg-[var(--color-surface-elevated)] border border-[var(--color-border-subtle)] flex items-center justify-center">
+                      <Sparkles className="w-5 h-5 text-[var(--color-text-secondary)] animate-pulse-subtle" />
                     </div>
                     <div>
                       <h3 className="font-medium text-[var(--color-text-primary)]">Analyzing design patterns</h3>
@@ -282,8 +282,8 @@ export default function Home() {
                   className="p-6 bg-[var(--color-surface)] border border-[var(--color-border-subtle)] rounded-2xl card-hover"
                   style={{ animationDelay: `${i * 0.1}s` }}
                 >
-                  <div className="w-10 h-10 rounded-xl bg-[var(--color-accent-subtle)] flex items-center justify-center mb-4">
-                    <feature.icon className="w-5 h-5 text-[var(--color-accent)]" />
+                  <div className="w-10 h-10 rounded-xl bg-[var(--color-surface-elevated)] border border-[var(--color-border-subtle)] flex items-center justify-center mb-4">
+                    <feature.icon className="w-5 h-5 text-[var(--color-text-secondary)]" />
                   </div>
                   <h3 className="font-medium text-[var(--color-text-primary)] mb-2">{feature.title}</h3>
                   <p className="text-sm text-[var(--color-text-muted)]">{feature.description}</p>

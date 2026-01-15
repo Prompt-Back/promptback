@@ -72,25 +72,23 @@ function PromptSection({
 
   return (
     <div className="bg-[var(--color-surface)] border border-[var(--color-border-subtle)] rounded-2xl overflow-hidden">
-      <button
-        onClick={() => setExpanded(!expanded)}
-        className="w-full flex items-center justify-between p-5 hover:bg-[var(--color-surface-elevated)] transition-colors"
-      >
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-[var(--color-accent-subtle)] flex items-center justify-center">
-            <Icon className="w-4.5 h-4.5 text-[var(--color-accent)]" />
+      <div className="flex items-center justify-between p-5">
+        <button
+          onClick={() => setExpanded(!expanded)}
+          className="flex items-center gap-3 hover:opacity-80 transition-opacity"
+        >
+          <div className="w-9 h-9 rounded-xl bg-[var(--color-surface-elevated)] border border-[var(--color-border-subtle)] flex items-center justify-center">
+            <Icon className="w-4.5 h-4.5 text-[var(--color-text-secondary)]" />
           </div>
           <h3 className="font-medium text-[var(--color-text-primary)]">{title}</h3>
-        </div>
-        <div className="flex items-center gap-3">
-          {expanded && <CopyButton text={content} />}
           {expanded ? (
             <ChevronDown className="w-5 h-5 text-[var(--color-text-muted)]" />
           ) : (
             <ChevronRight className="w-5 h-5 text-[var(--color-text-muted)]" />
           )}
-        </div>
-      </button>
+        </button>
+        {expanded && <CopyButton text={content} />}
+      </div>
       {expanded && (
         <motion.div
           initial={{ height: 0, opacity: 0 }}
@@ -115,22 +113,22 @@ function ComponentPromptCard({ name, prompt }: { name: string; prompt: string })
 
   return (
     <div className="bg-[var(--color-bg)] border border-[var(--color-border-subtle)] rounded-xl overflow-hidden">
-      <button
-        onClick={() => setExpanded(!expanded)}
-        className="w-full flex items-center justify-between p-4 hover:bg-[var(--color-surface-elevated)] transition-colors"
-      >
-        <span className="text-sm font-medium text-[var(--color-text-primary)] capitalize">
-          {name.replace(/_/g, ' ')}
-        </span>
-        <div className="flex items-center gap-2">
-          {expanded && <CopyButton text={prompt} />}
+      <div className="flex items-center justify-between p-4">
+        <button
+          onClick={() => setExpanded(!expanded)}
+          className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+        >
+          <span className="text-sm font-medium text-[var(--color-text-primary)] capitalize">
+            {name.replace(/_/g, ' ')}
+          </span>
           {expanded ? (
             <ChevronDown className="w-4 h-4 text-[var(--color-text-muted)]" />
           ) : (
             <ChevronRight className="w-4 h-4 text-[var(--color-text-muted)]" />
           )}
-        </div>
-      </button>
+        </button>
+        {expanded && <CopyButton text={prompt} />}
+      </div>
       {expanded && (
         <div className="px-4 pb-4">
           <pre className="font-mono text-xs text-[var(--color-text-secondary)] whitespace-pre-wrap leading-relaxed p-3 bg-[var(--color-surface)] rounded-lg">
@@ -185,8 +183,8 @@ export default function AnalysisResult({ data }: AnalysisResultProps) {
       {/* Component Prompts */}
       <div className="bg-[var(--color-surface)] border border-[var(--color-border-subtle)] rounded-2xl overflow-hidden">
         <div className="flex items-center gap-3 p-5 border-b border-[var(--color-border-subtle)]">
-          <div className="w-9 h-9 rounded-xl bg-[var(--color-accent-subtle)] flex items-center justify-center">
-            <Grid3X3 className="w-4.5 h-4.5 text-[var(--color-accent)]" />
+          <div className="w-9 h-9 rounded-xl bg-[var(--color-surface-elevated)] border border-[var(--color-border-subtle)] flex items-center justify-center">
+            <Grid3X3 className="w-4.5 h-4.5 text-[var(--color-text-secondary)]" />
           </div>
           <h3 className="font-medium text-[var(--color-text-primary)]">Component Prompt Stack</h3>
         </div>
@@ -200,8 +198,8 @@ export default function AnalysisResult({ data }: AnalysisResultProps) {
       {/* Style DNA */}
       <div className="bg-[var(--color-surface)] border border-[var(--color-border-subtle)] rounded-2xl overflow-hidden">
         <div className="flex items-center gap-3 p-5 border-b border-[var(--color-border-subtle)]">
-          <div className="w-9 h-9 rounded-xl bg-[var(--color-accent-subtle)] flex items-center justify-center">
-            <Fingerprint className="w-4.5 h-4.5 text-[var(--color-accent)]" />
+          <div className="w-9 h-9 rounded-xl bg-[var(--color-surface-elevated)] border border-[var(--color-border-subtle)] flex items-center justify-center">
+            <Fingerprint className="w-4.5 h-4.5 text-[var(--color-text-secondary)]" />
           </div>
           <h3 className="font-medium text-[var(--color-text-primary)]">Style DNA</h3>
         </div>
