@@ -5,73 +5,110 @@ const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 });
 
-const SYSTEM_PROMPT = `You are Claude operating as a senior AI product designer, reverse-prompt engineer, and UI/UX critic with 10+ years of experience in:
+const SYSTEM_PROMPT = `You are an elite UI/UX reverse-engineer. Your job is to analyze websites and produce prompts so detailed and precise that an AI could recreate the UI pixel-perfectly.
 
-- High-end SaaS design (Stripe, Linear, Vercel tier)
-- Design systems and layout archaeology
-- Prompt engineering and intent reconstruction
+You have 15 years of experience at companies like Stripe, Linear, Vercel, and Figma. You understand:
+- Every CSS property and when to use it
+- Spacing systems (4px, 8px grids)
+- Typography scales and hierarchies
+- Color theory and palette construction
+- Component architecture patterns
+- Micro-interactions and state management
+- Responsive design breakpoints
+- Accessibility considerations
 
-Your specialty is reverse-engineering finished digital products into the prompts that likely created them.
+CRITICAL INSTRUCTION: Your prompts must be IMPLEMENTATION-READY. Not vague descriptions. Actual specifications that a developer or AI can execute.
 
-STRICT RULES:
-- No emojis
-- No hype language
-- No "AI magic" wording
-- No guessing brand names
-- No claiming certainty where there is none
-- Use whitespace-friendly formatting
-- Write like a senior designer documenting work
-- Prefer clarity over verbosity
-- Be elegant, not clever
+BAD: "Clean navigation with good spacing"
+GOOD: "Fixed top navigation bar, height 64px, with horizontal padding 24px. Logo left-aligned, 32px height. Nav links horizontally centered with 32px gaps, 14px medium weight text, #71717a color, hover state transitions to #fafafa over 150ms. CTA button right-aligned, 36px height, 16px horizontal padding, 14px semibold text, solid background #fff, text #000, border-radius 8px, hover darkens background 5%."
 
-You think like a calm, precise, opinionated senior designer. You do NOT hallucinate, embellish, or produce generic output.
+You write like an engineer documenting a design system, not a marketer describing vibes.`;
 
-When analyzing a website, you must provide your response in a specific JSON format.`;
-
-const ANALYSIS_PROMPT = `Analyze the following website and reverse-engineer it into the prompts that most likely created it.
+const ANALYSIS_PROMPT = `Analyze this website and generate implementation-ready prompts to recreate its UI.
 
 INPUT TYPE: {type}
 INPUT: {input}
 
-Analyze the site and reconstruct the original design + build prompts based on:
-- Layout structure
-- Spacing & grid logic
-- Typography philosophy
-- Color usage
-- Component hierarchy
-- Motion assumptions (if any)
-- Product intent
-- Target audience
-- Design maturity level
+ANALYSIS REQUIREMENTS:
 
-Silently infer:
-- What kind of product this is (SaaS, crypto, fintech, devtool, media, etc.)
-- The design maturity (junior / mid / senior / studio-grade)
-- Whether it was likely AI-generated, human-designed, or AI-assisted
-- Which design references it resembles
-- What constraints the original creator likely gave the AI
+1. LAYOUT ANALYSIS
+- Container widths (max-width values)
+- Grid system (columns, gaps, breakpoints)
+- Section padding/margins (exact values or ratios)
+- Vertical rhythm and spacing scale
+- Content alignment patterns
 
-You MUST respond with valid JSON in this exact structure:
+2. TYPOGRAPHY ANALYSIS
+- Heading hierarchy (h1-h6 sizes, weights, line-heights)
+- Body text specifications
+- Font stack assumptions (serif, sans-serif, mono)
+- Letter-spacing and text transforms
+- Link and interactive text styles
+
+3. COLOR ANALYSIS
+- Background colors (primary, secondary, elevated surfaces)
+- Text colors (primary, secondary, muted, disabled)
+- Border colors and opacities
+- Accent/brand color usage
+- Gradient specifications if present
+- Shadow values (box-shadow specs)
+
+4. COMPONENT PATTERNS
+- Button variants (primary, secondary, ghost, sizes)
+- Input field styling
+- Card patterns (padding, borders, shadows, radius)
+- Icon sizing and stroke weights
+- Badge/tag styling
+- Divider/separator patterns
+
+5. INTERACTION PATTERNS
+- Hover states (color shifts, transforms, shadows)
+- Transition durations and easing
+- Focus states for accessibility
+- Active/pressed states
+- Loading states if visible
+
+6. RESPONSIVE BEHAVIOR
+- Breakpoint assumptions
+- Mobile navigation pattern
+- Content reflow strategy
+- Touch target sizing
+
+OUTPUT FORMAT - Respond with this exact JSON structure:
+
 {
-  "coreIntentPrompt": "A single, clean, reusable master prompt that captures the essence of the website. Written as if for Cursor/Claude/GPT. Calm, confident, professional tone.",
-  "uiSystemPrompt": "A detailed design-system-level prompt describing: Layout system (grid, spacing, margins), Typography style (without guessing exact fonts unless obvious), Color philosophy, Visual density, Interaction philosophy, Responsiveness expectations. This should feel like something a senior designer would actually write.",
+  "coreIntentPrompt": "A comprehensive master prompt (300-500 words) that captures the complete design intent. Include: overall aesthetic direction, target user, visual tone, key design principles, and the feeling the UI should evoke. This prompt alone should give an AI enough context to make good design decisions.",
+  
+  "uiSystemPrompt": "A detailed design system specification (500-800 words) covering: exact spacing scale (e.g., 4/8/12/16/24/32/48/64px), typography scale with sizes/weights/line-heights, complete color palette with hex values or descriptive relationships, border-radius scale, shadow definitions, transition defaults. Write as CSS custom properties or design tokens where possible.",
+  
   "componentPrompts": {
-    "navigation": "Short, precise, reusable prompt for the navigation component",
-    "hero": "Short, precise, reusable prompt for the hero section",
-    "content_sections": "Prompt for main content sections",
-    "cards_or_data": "Prompt for cards, tables, or dashboard elements if present",
-    "footer_or_cta": "Prompt for footer or call-to-action sections"
+    "navigation": "Detailed nav implementation prompt (150-250 words). Include: position, height, background, logo placement and size, link styling (font, color, spacing, hover), CTA button specs, mobile behavior, any scroll effects.",
+    
+    "hero": "Detailed hero section prompt (200-300 words). Include: layout (centered/split/asymmetric), background treatment, headline specs (size, weight, max-width, color), subheadline specs, CTA buttons (variants, sizes, spacing), any imagery/illustration treatment, spacing from nav and to next section.",
+    
+    "content_sections": "Detailed content section prompt (200-300 words). Include: section padding, heading styles, body text max-width, grid layouts for features/benefits, card patterns if used, icon treatment, alternating patterns if present.",
+    
+    "cards_or_data": "Detailed card/data display prompt (150-250 words). Include: card dimensions or aspect ratios, padding, background, border, shadow, border-radius, content hierarchy within cards, hover effects, grid/list layout specs.",
+    
+    "footer_or_cta": "Detailed footer prompt (150-200 words). Include: background, padding, column layout, link styling, logo treatment, copyright text styling, any newsletter or CTA patterns, border/divider treatment."
   },
-  "styleDna": ["Array", "of", "aesthetic", "identity", "descriptors"],
-  "assumptions": "Clearly state: What is directly inferred, what is assumed, what is uncertain.",
-  "confidenceLevel": "High confidence / Medium confidence / Low confidence - with brief explanation"
+  
+  "styleDna": ["3-6 precise aesthetic descriptors from: Minimal, Editorial, Brutalist, Fintech-grade, Developer-centric, Crypto-native, Enterprise-calm, Experimental, Dashboard-heavy, Content-dense, Whitespace-rich, Dark-mode-native, Gradient-heavy, Glassmorphic, Flat, Skeuomorphic, Monochromatic, High-contrast, Soft-UI, Sharp-geometric, Organic-rounded"],
+  
+  "assumptions": "List what you inferred directly from the input vs. what you assumed based on common patterns. Be explicit about uncertainty. Format as bullet points.",
+  
+  "confidenceLevel": "High/Medium/Low confidence with 1-sentence explanation of why."
 }
 
-Only use style DNA terms if applicable. Examples: Minimal, Editorial, Brutalist, Fintech-grade, Developer-centric, Crypto-native, Enterprise-calm, Experimental.
+QUALITY CHECKLIST - Before responding, verify:
+- Prompts include specific measurements (px, rem, %) not vague terms
+- Color relationships are described precisely
+- Typography includes size, weight, AND line-height
+- Interactive states are specified
+- Spacing is consistent with a defined scale
+- Prompts are long enough to be actionable (not one-liners)
 
-If the input is a description rather than a URL, analyze what website WOULD look like based on the description and generate prompts that would create it.
-
-Respond ONLY with valid JSON. No markdown, no explanation text before or after.`;
+Respond ONLY with valid JSON. No markdown code fences. No text before or after the JSON.`;
 
 export async function POST(request: Request) {
   try {
@@ -98,7 +135,7 @@ export async function POST(request: Request) {
 
     const message = await anthropic.messages.create({
       model: 'claude-sonnet-4-20250514',
-      max_tokens: 4096,
+      max_tokens: 8192,
       messages: [
         {
           role: 'user',
