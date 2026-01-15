@@ -81,12 +81,12 @@ export default function Home() {
           <div className="flex items-center gap-3">
             <Image 
               src="/logo.png" 
-              alt="PromptLens" 
+              alt="PromptBack" 
               width={32} 
               height={32} 
               className="rounded-lg"
             />
-            <span className="font-semibold text-[var(--color-text-primary)]">PromptLens</span>
+            <span className="font-semibold text-[var(--color-text-primary)]">PromptBack</span>
           </div>
           <nav className="flex items-center gap-6">
             <span className="text-sm text-[var(--color-text-muted)]">v1.0</span>
@@ -302,7 +302,7 @@ export default function Home() {
       <footer className="fixed bottom-0 left-0 right-0 border-t border-[var(--color-border-subtle)] bg-[var(--color-bg)]/80 backdrop-blur-xl">
         <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
           <span className="text-sm text-[var(--color-text-muted)]">
-            PromptLens - Reverse prompt engineering tool
+            PromptBack - Reverse prompt engineering tool
           </span>
           <span className="text-sm text-[var(--color-text-muted)]">
             Powered by Claude

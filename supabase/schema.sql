@@ -1,4 +1,4 @@
--- PromptLens Database Schema
+-- PromptBack Database Schema
 -- Run this in your Supabase SQL editor to set up the database
 
 -- Enable UUID extension

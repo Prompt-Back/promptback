@@ -1,5 +1,5 @@
 {
-  "name": "promptlens",
+  "name": "promptback",
   "version": "1.0.0",
   "description": "Reverse engineer websites into the prompts that created them",
   "private": true,

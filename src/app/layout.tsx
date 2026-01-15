@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "PromptLens - Reverse Engineer Websites into Prompts",
+  title: "PromptBack - Reverse Engineer Websites into Prompts",
   description: "Analyze any website and reconstruct the prompts that could have created it. A tool for designers, developers, and prompt engineers.",
   keywords: ["prompt engineering", "reverse engineering", "web design", "AI prompts", "design systems"],
-  authors: [{ name: "PromptLens" }],
+  authors: [{ name: "PromptBack" }],
   icons: {
     icon: [
       { url: "/favicon.ico" },
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   },
   manifest: "/site.webmanifest",
   openGraph: {
-    title: "PromptLens",
+    title: "PromptBack",
     description: "Reverse engineer websites into the prompts that created them",
     type: "website",
   },
