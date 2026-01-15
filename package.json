@@ -1,6 +1,7 @@
 {
   "name": "promptlens",
-  "version": "0.1.0",
+  "version": "1.0.0",
+  "description": "Reverse engineer websites into the prompts that created them",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -9,6 +10,10 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.71.2",
+    "@supabase/supabase-js": "^2.90.1",
+    "framer-motion": "^12.26.2",
+    "lucide-react": "^0.562.0",
     "next": "16.1.2",
     "react": "19.2.3",
     "react-dom": "19.2.3"
