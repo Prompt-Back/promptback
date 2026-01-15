@@ -104,11 +104,11 @@ export default function Home() {
             transition={{ duration: 0.6 }}
             className="text-center mb-16"
           >
-            <h1 className="font-['Instrument_Serif'] text-5xl md:text-6xl text-[var(--color-text-primary)] mb-6 leading-tight">
+            <h1 className="text-5xl md:text-6xl text-[var(--color-text-primary)] mb-6 leading-relaxed tracking-wide font-light">
               Reverse engineer any website<br />
               <span className="text-[var(--color-text-secondary)]">into its original prompts</span>
             </h1>
-            <p className="text-lg text-[var(--color-text-muted)] max-w-2xl mx-auto">
+            <p className="text-lg text-[var(--color-text-muted)] max-w-2xl mx-auto leading-relaxed">
               Analyze the design DNA of any website and reconstruct the prompts that most likely created it. 
               Built for designers, developers, and prompt engineers.
             </p>
