@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Layers, 
   Link as LinkIcon, 
   FileText, 
   ArrowRight, 
@@ -16,6 +15,7 @@ import {
   Layout,
   Loader2
 } from 'lucide-react';
+import Image from 'next/image';
 import AnalysisResult from '@/components/AnalysisResult';
 
 type InputMode = 'url' | 'description';
@@ -79,9 +79,13 @@ export default function Home() {
       <header className="fixed top-0 left-0 right-0 z-50 border-b border-[var(--color-border-subtle)] bg-[var(--color-bg)]/80 backdrop-blur-xl">
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-[var(--color-surface-elevated)] border border-[var(--color-border)] flex items-center justify-center">
-              <Layers className="w-4 h-4 text-[var(--color-text-primary)]" />
-            </div>
+            <Image 
+              src="/logo.png" 
+              alt="PromptLens" 
+              width={32} 
+              height={32} 
+              className="rounded-lg"
+            />
             <span className="font-semibold text-[var(--color-text-primary)]">PromptLens</span>
           </div>
           <nav className="flex items-center gap-6">
