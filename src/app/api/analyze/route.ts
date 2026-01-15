@@ -5,110 +5,128 @@ const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 });
 
-const SYSTEM_PROMPT = `You are an elite UI/UX reverse-engineer. Your job is to analyze websites and produce prompts so detailed and precise that an AI could recreate the UI pixel-perfectly.
+const SYSTEM_PROMPT = `You are the world's most precise UI reverse-engineer. Your mission: analyze any website and produce prompts so exact that an AI recreates it IDENTICALLY.
 
-You have 15 years of experience at companies like Stripe, Linear, Vercel, and Figma. You understand:
-- Every CSS property and when to use it
-- Spacing systems (4px, 8px grids)
-- Typography scales and hierarchies
-- Color theory and palette construction
-- Component architecture patterns
-- Micro-interactions and state management
-- Responsive design breakpoints
-- Accessibility considerations
+You think in CSS. You see a button and immediately know: height 40px, padding 0 16px, font-size 14px, font-weight 500, line-height 40px, border-radius 6px, background #18181b, color #fafafa, transition all 150ms ease, hover:background #27272a.
 
-CRITICAL INSTRUCTION: Your prompts must be IMPLEMENTATION-READY. Not vague descriptions. Actual specifications that a developer or AI can execute.
+ABSOLUTE RULES:
+1. NEVER use vague words: "clean", "modern", "nice", "good spacing", "professional"
+2. ALWAYS use exact values: pixels, percentages, hex colors, milliseconds
+3. EVERY element needs: size, color, spacing, and states
+4. ASSUME the reader has zero context - be exhaustively specific
 
-BAD: "Clean navigation with good spacing"
-GOOD: "Fixed top navigation bar, height 64px, with horizontal padding 24px. Logo left-aligned, 32px height. Nav links horizontally centered with 32px gaps, 14px medium weight text, #71717a color, hover state transitions to #fafafa over 150ms. CTA button right-aligned, 36px height, 16px horizontal padding, 14px semibold text, solid background #fff, text #000, border-radius 8px, hover darkens background 5%."
+EXAMPLE OF PERFECT PROMPT:
+"Navigation: Fixed position, top 0, left 0, right 0, height 64px, background rgba(10,10,11,0.8), backdrop-filter blur(12px), border-bottom 1px solid rgba(255,255,255,0.06), z-index 50, padding 0 24px. Inner container max-width 1200px, margin 0 auto, display flex, align-items center, justify-content space-between, height 100%.
 
-You write like an engineer documenting a design system, not a marketer describing vibes.`;
+Logo: Left side, 32px height, SVG or image. 
 
-const ANALYSIS_PROMPT = `Analyze this website and generate implementation-ready prompts to recreate its UI.
+Nav links: Center, display flex, gap 32px. Each link: font-size 14px, font-weight 400, color #a1a1aa, letter-spacing -0.01em, text-decoration none, transition color 150ms ease. Hover: color #fafafa. Active page: color #fafafa, font-weight 500.
 
-INPUT TYPE: {type}
-INPUT: {input}
+CTA Button: Right side, height 36px, padding 0 16px, font-size 14px, font-weight 500, background #fafafa, color #0a0a0b, border-radius 8px, border none, cursor pointer, transition all 150ms ease. Hover: background #e4e4e7, transform translateY(-1px)."
 
-ANALYSIS REQUIREMENTS:
+THIS level of detail. EVERY section. NO exceptions.`;
 
-1. LAYOUT ANALYSIS
-- Container widths (max-width values)
-- Grid system (columns, gaps, breakpoints)
-- Section padding/margins (exact values or ratios)
-- Vertical rhythm and spacing scale
-- Content alignment patterns
+const ANALYSIS_PROMPT = `TASK: Reverse-engineer this website into pixel-perfect recreation prompts.
 
-2. TYPOGRAPHY ANALYSIS
-- Heading hierarchy (h1-h6 sizes, weights, line-heights)
-- Body text specifications
-- Font stack assumptions (serif, sans-serif, mono)
-- Letter-spacing and text transforms
-- Link and interactive text styles
+INPUT: {type} - {input}
 
-3. COLOR ANALYSIS
-- Background colors (primary, secondary, elevated surfaces)
-- Text colors (primary, secondary, muted, disabled)
-- Border colors and opacities
-- Accent/brand color usage
-- Gradient specifications if present
-- Shadow values (box-shadow specs)
+EXTRACTION CHECKLIST (analyze ALL of these):
 
-4. COMPONENT PATTERNS
-- Button variants (primary, secondary, ghost, sizes)
-- Input field styling
-- Card patterns (padding, borders, shadows, radius)
-- Icon sizing and stroke weights
-- Badge/tag styling
-- Divider/separator patterns
+□ GLOBAL STYLES
+- Background color (exact hex)
+- Base font family (serif/sans-serif/mono + specific if identifiable)
+- Base font size and color
+- Selection highlight color
+- Scrollbar styling
+- Focus ring style
 
-5. INTERACTION PATTERNS
-- Hover states (color shifts, transforms, shadows)
-- Transition durations and easing
-- Focus states for accessibility
-- Active/pressed states
-- Loading states if visible
+□ SPACING SYSTEM
+- Base unit (4px or 8px grid)
+- Section padding (top/bottom)
+- Container max-width
+- Content padding (left/right)
+- Consistent gaps between elements
 
-6. RESPONSIVE BEHAVIOR
-- Breakpoint assumptions
-- Mobile navigation pattern
-- Content reflow strategy
-- Touch target sizing
+□ TYPOGRAPHY SCALE
+- H1: size, weight, line-height, letter-spacing, color, margin
+- H2: size, weight, line-height, letter-spacing, color, margin
+- H3: size, weight, line-height, letter-spacing, color, margin
+- Body: size, weight, line-height, color
+- Small/caption: size, weight, color
+- Links: color, hover color, underline behavior
 
-OUTPUT FORMAT - Respond with this exact JSON structure:
+□ COLOR PALETTE
+- Background primary (page bg)
+- Background secondary (cards, sections)
+- Background elevated (modals, dropdowns)
+- Text primary (headings)
+- Text secondary (body)
+- Text muted (captions, placeholders)
+- Border color and opacity
+- Accent/brand color
+- Success/error/warning colors if present
+
+□ SHADOWS & EFFECTS
+- Card shadows (offset, blur, spread, color)
+- Button shadows
+- Hover shadow changes
+- Any glows or highlights
+- Backdrop blur values
+
+□ BORDER RADIUS SCALE
+- Small (inputs, tags): Xpx
+- Medium (buttons, cards): Xpx
+- Large (modals, sections): Xpx
+- Full (avatars, pills): 9999px
+
+□ TRANSITIONS
+- Default duration (150ms/200ms/300ms)
+- Easing function (ease/ease-out/cubic-bezier)
+- Properties that animate
+
+□ COMPONENT STATES
+- Default state
+- Hover state (color, shadow, transform changes)
+- Active/pressed state
+- Focus state (ring color, offset)
+- Disabled state (opacity, cursor)
+
+OUTPUT JSON (follow EXACTLY):
 
 {
-  "coreIntentPrompt": "A comprehensive master prompt (300-500 words) that captures the complete design intent. Include: overall aesthetic direction, target user, visual tone, key design principles, and the feeling the UI should evoke. This prompt alone should give an AI enough context to make good design decisions.",
-  
-  "uiSystemPrompt": "A detailed design system specification (500-800 words) covering: exact spacing scale (e.g., 4/8/12/16/24/32/48/64px), typography scale with sizes/weights/line-heights, complete color palette with hex values or descriptive relationships, border-radius scale, shadow definitions, transition defaults. Write as CSS custom properties or design tokens where possible.",
-  
+  "coreIntentPrompt": "Write 400-600 words describing the COMPLETE design vision. Include: 1) Product type and target audience, 2) Overall visual aesthetic with specific references (e.g., 'Stripe-like clarity' or 'Linear-style density'), 3) Color philosophy (dark/light, contrast levels, accent usage), 4) Typography philosophy (sharp/soft, tight/loose), 5) Spacing philosophy (dense/airy), 6) Interaction philosophy (subtle/pronounced), 7) The emotional response the design creates. Be specific enough that someone could make correct decisions about unlisted elements.",
+
+  "uiSystemPrompt": "Write 600-1000 words as a DESIGN SYSTEM SPECIFICATION. Format as implementable tokens:\n\n/* Colors */\n--color-bg-primary: #xxx;\n--color-bg-secondary: #xxx;\n--color-bg-elevated: #xxx;\n--color-text-primary: #xxx;\n--color-text-secondary: #xxx;\n--color-text-muted: #xxx;\n--color-border: #xxx;\n--color-accent: #xxx;\n\n/* Typography */\n--font-family-sans: 'xxx', system-ui, sans-serif;\n--font-family-mono: 'xxx', monospace;\n--font-size-xs: Xpx;\n--font-size-sm: Xpx;\n--font-size-base: Xpx;\n--font-size-lg: Xpx;\n--font-size-xl: Xpx;\n--font-size-2xl: Xpx;\n--font-size-3xl: Xpx;\n--font-size-4xl: Xpx;\n--line-height-tight: X;\n--line-height-normal: X;\n--line-height-relaxed: X;\n\n/* Spacing */\n--space-1: Xpx;\n--space-2: Xpx;\n--space-3: Xpx;\n--space-4: Xpx;\n--space-6: Xpx;\n--space-8: Xpx;\n--space-12: Xpx;\n--space-16: Xpx;\n\n/* Radius */\n--radius-sm: Xpx;\n--radius-md: Xpx;\n--radius-lg: Xpx;\n--radius-full: 9999px;\n\n/* Shadows */\n--shadow-sm: X;\n--shadow-md: X;\n--shadow-lg: X;\n\n/* Transitions */\n--transition-fast: Xms ease;\n--transition-normal: Xms ease;\n\nFill in ALL values based on analysis. Add any additional tokens needed.",
+
   "componentPrompts": {
-    "navigation": "Detailed nav implementation prompt (150-250 words). Include: position, height, background, logo placement and size, link styling (font, color, spacing, hover), CTA button specs, mobile behavior, any scroll effects.",
-    
-    "hero": "Detailed hero section prompt (200-300 words). Include: layout (centered/split/asymmetric), background treatment, headline specs (size, weight, max-width, color), subheadline specs, CTA buttons (variants, sizes, spacing), any imagery/illustration treatment, spacing from nav and to next section.",
-    
-    "content_sections": "Detailed content section prompt (200-300 words). Include: section padding, heading styles, body text max-width, grid layouts for features/benefits, card patterns if used, icon treatment, alternating patterns if present.",
-    
-    "cards_or_data": "Detailed card/data display prompt (150-250 words). Include: card dimensions or aspect ratios, padding, background, border, shadow, border-radius, content hierarchy within cards, hover effects, grid/list layout specs.",
-    
-    "footer_or_cta": "Detailed footer prompt (150-200 words). Include: background, padding, column layout, link styling, logo treatment, copyright text styling, any newsletter or CTA patterns, border/divider treatment."
+    "navigation": "Write 250-400 words. MUST include: Position (fixed/sticky/static), dimensions (height, padding), background (color, opacity, blur), border, z-index. Logo specs (size, position). Nav links (font-size, weight, color, spacing, hover state with exact color and transition). CTA button (height, padding, colors, radius, hover state). Mobile breakpoint behavior (hamburger icon size, menu style). Any scroll-triggered changes.",
+
+    "hero": "Write 300-500 words. MUST include: Section height or padding (min-height or py values), background (color, gradient, image, overlay). Container max-width and alignment. Headline (font-size at desktop AND mobile, weight, line-height, letter-spacing, color, max-width for line breaks). Subheadline (same specs). CTA buttons (primary and secondary variants with ALL states). Any decorative elements (gradients, patterns, shapes with positions). Spacing between all elements.",
+
+    "content_sections": "Write 300-450 words. MUST include: Section padding (top/bottom), background colors (alternating if applicable). Heading styles (size, weight, margin-bottom). Body text (max-width, size, line-height). Grid layouts (columns, gap, breakpoint changes). Feature cards if present (with full card specs). Icon sizing and colors. Any dividers or separators.",
+
+    "cards_or_data": "Write 250-400 words. MUST include: Card dimensions (width, min-height or aspect-ratio), padding (internal spacing), background, border (width, color), border-radius, shadow (default and hover). Content hierarchy (image/icon size, title specs, description specs, metadata specs). Grid/list layout (columns, gap, responsive behavior). Hover effects (transform, shadow change, border change).",
+
+    "footer_or_cta": "Write 200-350 words. MUST include: Section padding, background color. Any top CTA section (heading, button, background). Footer columns (number, gap, heading style, link style). Logo placement and size. Social icons (size, color, hover). Copyright text (size, color). Border/divider if present. Responsive stacking behavior."
   },
-  
-  "styleDna": ["3-6 precise aesthetic descriptors from: Minimal, Editorial, Brutalist, Fintech-grade, Developer-centric, Crypto-native, Enterprise-calm, Experimental, Dashboard-heavy, Content-dense, Whitespace-rich, Dark-mode-native, Gradient-heavy, Glassmorphic, Flat, Skeuomorphic, Monochromatic, High-contrast, Soft-UI, Sharp-geometric, Organic-rounded"],
-  
-  "assumptions": "List what you inferred directly from the input vs. what you assumed based on common patterns. Be explicit about uncertainty. Format as bullet points.",
-  
-  "confidenceLevel": "High/Medium/Low confidence with 1-sentence explanation of why."
+
+  "styleDna": ["Select 4-7 that PRECISELY match: Minimal, Editorial, Brutalist, Fintech-grade, Developer-centric, Crypto-native, Enterprise-calm, Experimental, Dashboard-heavy, Content-dense, Whitespace-rich, Dark-mode-native, Gradient-accent, Glassmorphic, Flat-design, Monochromatic, High-contrast, Soft-shadows, Sharp-geometric, Organic-rounded, Grid-based, Asymmetric, Type-forward, Icon-heavy, Illustration-rich, Photo-driven, Data-dense, Action-oriented, Documentation-style, Marketing-forward"],
+
+  "assumptions": "FORMAT AS:\n\nDIRECTLY OBSERVED:\n- bullet points of what you can see/infer with high confidence\n\nASSUMED FROM PATTERNS:\n- bullet points of educated guesses based on common practices\n\nUNCERTAIN:\n- bullet points of things you cannot determine",
+
+  "confidenceLevel": "State: 'High confidence' / 'Medium confidence' / 'Low confidence' followed by: 'Recreation accuracy estimate: X%' and one sentence explaining the main factor affecting confidence."
 }
 
-QUALITY CHECKLIST - Before responding, verify:
-- Prompts include specific measurements (px, rem, %) not vague terms
-- Color relationships are described precisely
-- Typography includes size, weight, AND line-height
-- Interactive states are specified
-- Spacing is consistent with a defined scale
-- Prompts are long enough to be actionable (not one-liners)
+FINAL VERIFICATION - Before outputting, confirm:
+✓ Every color is a hex value or precise rgba()
+✓ Every size is in px, rem, or %
+✓ Every font spec includes size AND weight AND line-height
+✓ Every interactive element has hover state defined
+✓ Every spacing value is explicit
+✓ Prompts are detailed enough to code WITHOUT seeing the original
+✓ Total response uses full detail capacity
 
-Respond ONLY with valid JSON. No markdown code fences. No text before or after the JSON.`;
+OUTPUT ONLY VALID JSON. No markdown. No explanation text.`;
 
 export async function POST(request: Request) {
   try {
@@ -135,7 +153,7 @@ export async function POST(request: Request) {
 
     const message = await anthropic.messages.create({
       model: 'claude-sonnet-4-20250514',
-      max_tokens: 8192,
+      max_tokens: 16000,
       messages: [
         {
           role: 'user',
@@ -145,16 +163,13 @@ export async function POST(request: Request) {
       system: SYSTEM_PROMPT,
     });
 
-    // Extract the text content from the response
     const textContent = message.content.find((block) => block.type === 'text');
     if (!textContent || textContent.type !== 'text') {
       throw new Error('No text content in response');
     }
 
-    // Parse the JSON response
     let analysisData;
     try {
-      // Clean the response - remove any markdown code blocks if present
       let cleanedResponse = textContent.text.trim();
       if (cleanedResponse.startsWith('```json')) {
         cleanedResponse = cleanedResponse.slice(7);
